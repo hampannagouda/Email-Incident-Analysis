@@ -148,7 +148,11 @@ def post_to_teams(webhook_url: str, payload: dict, max_attempts: int = 3) -> boo
         try:
             resp = requests.post(webhook_url, json=payload, timeout=30)
         except requests.RequestException as exc:
-            log.warning("Teams post attempt %d failed: %s", attempt, exc)
+            # Log only the exception class: requests error strings embed the
+            # webhook URL, which must stay out of logs.
+            log.warning(
+                "Teams post attempt %d failed: %s", attempt, type(exc).__name__
+            )
         else:
             if resp.status_code < 300:
                 return True

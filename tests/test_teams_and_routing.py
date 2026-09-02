@@ -74,6 +74,16 @@ def test_ticket_url_template():
     assert TicketingConfig().url_for("INC001") is None
 
 
+def test_ticket_url_rejects_unsafe_incident_numbers():
+    ticketing = TicketingConfig(url_template="https://snow/inc?number={incident_number}")
+    # URL syntax, spaces, or oversized strings from a hostile email never
+    # reach the card's link.
+    assert ticketing.url_for("INC001&redirect=//evil.com") is None
+    assert ticketing.url_for("INC 001") is None
+    assert ticketing.url_for("../../etc") is None
+    assert ticketing.url_for("A" * 41) is None
+
+
 def test_state_dedup_persists(tmp_path):
     path = tmp_path / "state.json"
     store = ProcessedStore(path)

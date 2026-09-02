@@ -132,6 +132,24 @@ incident_agent/
 tests/              Unit tests + sample incident emails
 ```
 
+## Security notes
+
+- **Secrets never live in the repo.** All credentials (API key, Azure client
+  secret, Teams webhook URLs) belong in `.env`, and `.env`, `config.yaml`, and
+  `.state/` are gitignored. Treat webhook URLs as secrets — anyone holding one
+  can post to your channel. Nothing in the code logs a webhook URL or token.
+- **Least-privilege mailbox access.** Grant the Azure app only `Mail.Read`
+  (or `Mail.ReadWrite` if marking read), and scope it to the single incident
+  mailbox with an Exchange application access policy.
+- **Untrusted email content.** Emails are treated as attacker-controlled
+  input: extracted incident numbers are strictly validated and URL-encoded
+  before being placed in the card's "Open ticket" link, card fields are plain
+  Adaptive Card text (no HTML rendering), and the extraction prompt instructs
+  the model to ground every field in the email text. Worst case for a hostile
+  email is a misleading notification in Teams — it cannot reach beyond that.
+- **If a secret ever lands in a commit, rotate it** (regenerate the webhook,
+  reset the client secret / API key); deleting the commit is not enough.
+
 ## Design notes
 
 - **Structured outputs, not prompt-and-pray**: extraction uses the Claude API's

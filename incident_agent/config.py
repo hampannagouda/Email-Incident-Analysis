@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import os
+import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+from urllib.parse import quote
 
 import yaml
 from dotenv import load_dotenv
@@ -53,6 +55,11 @@ class TeamsConfig(BaseModel):
         return url or None
 
 
+# Incident numbers come from email content (possibly attacker-controlled), so
+# only plain ticket-shaped identifiers may be substituted into the ticket URL.
+_SAFE_INCIDENT_NUMBER = re.compile(r"^[A-Za-z0-9_-]{1,40}$")
+
+
 class TicketingConfig(BaseModel):
     # e.g. "https://instance.service-now.com/nav_to.do?uri=incident.do%3Fsysparm_query=number%3D{incident_number}"
     url_template: str = ""
@@ -60,7 +67,14 @@ class TicketingConfig(BaseModel):
     def url_for(self, incident_number: Optional[str]) -> Optional[str]:
         if not self.url_template or not incident_number:
             return None
-        return self.url_template.format(incident_number=incident_number)
+        if not _SAFE_INCIDENT_NUMBER.match(incident_number):
+            return None
+        try:
+            return self.url_template.format(
+                incident_number=quote(incident_number, safe="")
+            )
+        except (KeyError, IndexError, ValueError):
+            return None
 
 
 class StateConfig(BaseModel):

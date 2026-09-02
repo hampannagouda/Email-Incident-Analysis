@@ -57,7 +57,12 @@ class IncidentEmailAgent:
 
         posted = False
         if self.dry_run:
-            log.info("[dry-run] Would post to %s", webhook or "<no webhook configured>")
+            # Webhook URLs are secrets — never log them, only the route taken.
+            log.info(
+                "[dry-run] Would post via the %s route (%s)",
+                analysis.severity,
+                "webhook configured" if webhook else "no webhook configured",
+            )
             print(json.dumps(payload, indent=2))
         elif not webhook:
             log.error(
