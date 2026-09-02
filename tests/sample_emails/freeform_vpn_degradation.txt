@@ -1,0 +1,17 @@
+Subject: VPN really slow again for the Bangalore office
+From: rajesh.kumar@yourcompany.com
+
+Hi team,
+
+Since about 9:30 this morning most people in the Bangalore office are seeing
+the corporate VPN drop every few minutes, and when it stays up file transfers
+to the Hyderabad file server crawl at a few KB/s. Video calls are unusable.
+
+We think it started after last night's firewall maintenance window. Around
+300 folks in the office are affected and the offshore delivery team can't
+reach client environments.
+
+Can someone from network ops take a look urgently? Happy to jump on a call.
+
+Thanks,
+Rajesh

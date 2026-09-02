@@ -1,0 +1,45 @@
+# Incident Email Agent configuration.
+# Copy to config.yaml and fill in your values.
+# Any string value can be written as "env:VAR_NAME" to read it from the
+# environment (or the .env file) instead of committing secrets here.
+
+mailbox:
+  address: itsm-incidents@yourcompany.com   # mailbox to monitor
+  folder: inbox
+  tenant_id: env:AZURE_TENANT_ID
+  client_id: env:AZURE_CLIENT_ID
+  client_secret: env:AZURE_CLIENT_SECRET
+  poll_interval_seconds: 60                 # --watch mode polling cadence
+  lookback_minutes: 60                      # how far back to look on the first run
+  only_unread: true
+  mark_as_read: true                        # mark handled mail as read in the mailbox
+  # Optional pre-filters (cheap, applied before the AI call).
+  # Leave empty to consider every new email; the AI still skips non-incidents.
+  from_addresses: []                        # e.g. ["servicenow@yourcompany.com"]
+  subject_keywords: []                      # e.g. ["incident", "INC", "outage", "P1", "alert"]
+
+claude:
+  model: claude-opus-5
+  effort: high                              # low | medium | high | xhigh | max
+  max_tokens: 8000
+
+teams:
+  # Fallback channel when no severity-specific webhook matches.
+  default_webhook_url: env:TEAMS_WEBHOOK_DEFAULT
+  # Route severities to different channels (e.g. majors war-room vs. routine ops).
+  severity_webhooks:
+    SEV1: env:TEAMS_WEBHOOK_MAJOR
+    SEV2: env:TEAMS_WEBHOOK_MAJOR
+    SEV3: env:TEAMS_WEBHOOK_DEFAULT
+    SEV4: env:TEAMS_WEBHOOK_DEFAULT
+  # Severities to silently drop (no Teams post), e.g. ["SEV4"].
+  suppress_severities: []
+
+ticketing:
+  # Optional "Open ticket" button on the card. {incident_number} is substituted.
+  # ServiceNow example:
+  # url_template: "https://yourinstance.service-now.com/nav_to.do?uri=incident.do%3Fsysparm_query=number%3D{incident_number}"
+  url_template: ""
+
+state:
+  path: .state/processed.json

@@ -1,0 +1,25 @@
+Subject: [P1] INC0045871 - Production database cluster down - Order processing halted
+From: servicenow@yourcompany.com
+
+Incident Notification - ServiceNow
+
+Number: INC0045871
+Priority: P1 - Critical
+State: In Progress
+Assignment group: Database Operations
+Affected CI: srv-db-prod-02, Oracle RAC Cluster PRD01
+Opened: 2026-08-19 06:42 UTC
+
+Short description:
+Production Oracle RAC cluster PRD01 is unreachable. All order-processing
+services in EMEA are returning HTTP 503. Approximately 4,200 users affected.
+
+Description:
+Monitoring detected node srv-db-prod-02 offline at 06:38 UTC followed by a
+full cluster failover failure. The order management application (OMS) and the
+billing portal cannot establish database connections. EMEA order intake is
+completely halted. Database Operations is engaged and investigating a
+suspected storage array fault.
+
+Work notes:
+06:45 UTC - Bridge opened, storage vendor paged.
