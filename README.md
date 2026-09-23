@@ -6,18 +6,7 @@ description), and posts a color-coded Adaptive Card to the appropriate
 Microsoft Teams channel — improving incident visibility and cutting manual
 triage effort.
 
-```
-┌──────────────┐    poll     ┌──────────────────┐   structured    ┌───────────────────┐
-│  Mailbox     │────────────▶│  Incident Agent  │────extraction──▶│  Claude API       │
-│ (MS Graph)   │             │  (this project)  │◀────analysis────│  (claude-opus-5)  │
-└──────────────┘             └────────┬─────────┘                 └───────────────────┘
-                                      │ severity-routed Adaptive Card
-                                      ▼
-                          ┌───────────────────────────┐
-                          │ Microsoft Teams channels  │
-                          │ (Workflows webhooks)      │
-                          └───────────────────────────┘
-```
+![Incident Email Agent workflow](docs/workflow.svg)
 
 ## How it works
 
